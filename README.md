@@ -24,7 +24,7 @@ This project extracts **3D human motion** from **multi-view video footage** sync
 
 3. Run the main script:
    ```bash
-   python main.py
+   python run.py
    ```  
 
 ## ⚙️ Configuration: config.json
