@@ -4,8 +4,8 @@ import sys
 import time
 import ffmpeg
 
-from experiment.music_segment_detection import detect_music_sections
-from experiment.video_offset_detection import find_sync_offset
+from src.preprocessing.music_segment_detection import detect_music_sections
+from src.preprocessing.video_offset_detection import find_sync_offset
 
 
 def trim_video_and_convert_to_60fps(input_path, output_path, start_time=0, duration=None):
@@ -45,6 +45,7 @@ def preprocess_videos(metadata):
     # ファイル名などの初期設定
     audio_path = metadata.get("audio", {}).get("reference_audio_path", None)
     videos = metadata.get("videos", [])
+    max_segments_count = metadata.get("max_segments_count", 100)
     detection_overlap_mergin = metadata.get("detection_overlap_mergin", 30)
     video_trimming_mergin = metadata.get("video_trimming_mergin", 5)
 
@@ -57,7 +58,7 @@ def preprocess_videos(metadata):
     video_output_dir = os.path.join(output_dir, "videos")    
     os.makedirs(video_output_dir, exist_ok=True)
 
-    print(f"[Info] config loaded: preprocess.json")
+    print(f"[Info] config loaded.")
 
 
     # --- 1. Detect music sections from 1 video ---
@@ -95,6 +96,7 @@ def preprocess_videos(metadata):
     # --- 3. Trim videos using detection and sync result
     print(f"[Info] start trimming videos.")
     
+    matching_results = matching_results[:max(1, min(len(matching_results), max_segments_count))]  # limit to max count 
     matching_results.sort(key=lambda x: x.get("start_time", 1e+9))  # sort by start_time
     video_processed_results = {
         "video_dirs": [],

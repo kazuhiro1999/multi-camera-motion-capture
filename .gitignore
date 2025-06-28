@@ -210,5 +210,6 @@ __marimo__/
 /config.json
 /setting/
 
-# resource data path
+# resource data and output path
 /[Dd]ata/
+/[Oo]utput/

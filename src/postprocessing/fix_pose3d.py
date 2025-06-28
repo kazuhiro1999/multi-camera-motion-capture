@@ -127,7 +127,7 @@ def refine_pose3d(videos, pose3d_pkl_path, output_path):
     print(f"refine completed: {output_path}")
 
 
-def optimize_with_bone_length(point3d, points2d, proj_matrices, parent_pos, length, method='least_squares'):
+def optimize_with_bone_length(point3d, points2d, proj_matrices, parent_pos, length, method='least_squares', verbose=1):
 
     def objective_function(point):
         point = np.array(point)
@@ -136,11 +136,13 @@ def optimize_with_bone_length(point3d, points2d, proj_matrices, parent_pos, leng
 
         # NaNやInfをチェック
         if np.isnan(reprojection_err).any() or np.isinf(reprojection_err).any():
-            print("NaN or Inf found in reprojection_err")
+            if verbose > 1:
+                print("NaN or Inf found in reprojection_err")
             return np.inf  # 無限大を返して最適化を停止する
 
         if np.isnan(length_err).any() or np.isinf(length_err).any():
-            print("NaN or Inf found in length_err")
+            if verbose > 1:
+                print("NaN or Inf found in length_err")
             return np.inf  # 無限大を返して最適化を停止する
         
         # ToDo: weight
@@ -153,11 +155,13 @@ def optimize_with_bone_length(point3d, points2d, proj_matrices, parent_pos, leng
             optimized_point3d = result.x
             #print(f"Optimization succeeded. Optimized position: {optimized_point3d}\nInitial position: {point3d}")
         else:
-            print(f"Optimization failed: {result.message}")
+            if verbose > 1:
+                print(f"Optimization failed: {result.message}")
             optimized_point3d = point3d  # 初期値を返す
         return optimized_point3d
     except Exception as e:
-        print(f"Optimization failed: {e}")
+        if verbose > 1:
+            print(f"Optimization failed: {e}")
         return point3d  # 初期値を返す
 
 # 再投影

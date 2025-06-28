@@ -2,12 +2,9 @@ import sys
 import pickle
 import numpy as np
 from tqdm import tqdm
+
 import matplotlib.pyplot as plt
 from matplotlib.animation import FFMpegWriter
-from src.postprocessing.one_euro_filter import OneEuroFilter  # 既存のOneEuroFilterクラス
-
-pkl_path = "reference_ws2023.mot"
-output_video_path = "reference_ws2023_filtered.mp4"
 
 POSE_CONNECTIONS = [
     (11, 12), (12, 24), (24, 23), (23, 11), 
@@ -42,31 +39,27 @@ def draw_3d_pose(ax, keypoints3d, color='green', linecolor='black'):
                 c=linecolor  # 線の色
             )
 
-# データの読み込み
-with open(pkl_path, 'rb') as p:
-    data = pickle.load(p)
+def visualize_pose3d(pkl_path, output_video_path, fps=60):
 
-frame_count = len(data['pose3d'])
+    # データの読み込み
+    with open(pkl_path, 'rb') as p:
+        data = pickle.load(p)
 
-# OneEuroFilter の初期化
-filter = OneEuroFilter(min_cutoff=1.0, beta=1.0, d_cutoff=2.0)
+    frame_count = len(data['pose3d'])
 
-# 3Dプロット用の設定
-fig = plt.figure()
-ax = fig.add_subplot(111, projection="3d")
+    # 3Dプロット用の設定
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection="3d")
 
-# 動画保存設定
-fps = 60  # フレームレート
-writer = FFMpegWriter(fps=fps, metadata=dict(title="3D Pose Animation", artist="Matplotlib"))
+    # 動画保存設定
+    writer = FFMpegWriter(fps=fps, metadata=dict(title="3D Pose Animation", artist="Matplotlib"))
 
-# 動画保存の開始
-with writer.saving(fig, output_video_path, dpi=100):
-    for i, pose3d in tqdm(enumerate(data['pose3d']), file=sys.stdout):
-        t = 1000 * i / fps  # milliseconds
-        if pose3d is not None:
-            pose3d = np.nan_to_num(pose3d, nan=0)
-            #pose3d = filter.apply(t, pose3d)
-            draw_3d_pose(ax, pose3d, color='black')
-            writer.grab_frame()  # フレームを保存
-        else:
-            print("pose is None")
+    # 動画保存の開始
+    with writer.saving(fig, output_video_path, dpi=100):
+        for i, pose3d in tqdm(enumerate(data['pose3d']), file=sys.stdout):
+            if pose3d is not None:
+                pose3d = np.nan_to_num(pose3d, nan=0)
+                draw_3d_pose(ax, pose3d, color='black')
+                writer.grab_frame()  # フレームを保存
+            else:
+                pass
