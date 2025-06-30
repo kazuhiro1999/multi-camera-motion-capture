@@ -24,7 +24,7 @@ This project extracts **3D human motion** from **multi-view video footage** sync
 
 3. Run the main script:
    ```bash
-   python main.py
+   python run.py
    ```  
 
 ## ⚙️ Configuration: config.json
@@ -56,6 +56,7 @@ This project extracts **3D human motion** from **multi-view video footage** sync
   - videos: List of video inputs with camera ID and settings.
   - camera_setting_path: Camera calibration JSON file. Must be updated when camera or resolution changes.
   - output_dir: Output root directory.
+  - max_segments_count: Max detection segments count.
   - detection_overlap_mergin: Margin (in px) for overlapping detection across views.
   - video_trimming_mergin: Extra trimming time (in sec) for synced video clips.
   - model_complexity: Pose model accuracy (0: Lite, 1: Full, 2: Heavy).
