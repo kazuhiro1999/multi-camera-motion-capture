@@ -191,8 +191,8 @@ def pose_to_body_transforms(pose):
     body_transform['LeftFoot']['rotation'] = matrix_to_quaternion(l_foot_rotation_matrix)
 
     # 左つま先
-    body_transform['LeftToe']['position'] = l_toe_pos.tolist()
-    body_transform['LeftToe']['rotation'] = matrix_to_quaternion(l_foot_rotation_matrix)
+    body_transform['LeftToes']['position'] = l_toe_pos.tolist()
+    body_transform['LeftToes']['rotation'] = matrix_to_quaternion(l_foot_rotation_matrix)
 
     # 右上脚
     r_upperleg_up = -(r_knee_pos - r_hip_pos)
@@ -224,8 +224,8 @@ def pose_to_body_transforms(pose):
     body_transform['RightFoot']['rotation'] = matrix_to_quaternion(r_foot_rotation_matrix)
 
     # 右つま先
-    body_transform['RightToe']['position'] = r_toe_pos.tolist()
-    body_transform['RightToe']['rotation'] = matrix_to_quaternion(r_foot_rotation_matrix)
+    body_transform['RightToes']['position'] = r_toe_pos.tolist()
+    body_transform['RightToes']['rotation'] = matrix_to_quaternion(r_foot_rotation_matrix)
 
     return body_transform
 
@@ -394,7 +394,7 @@ def convert_to_motion_file(pkl_path, output_path):
         body_transforms.append(body_transform)
 
     # Unity用のMotionFileに変換
-    motion_file = create_motion_file(body_transforms, floor_offset=0.05, frame_rate=60.0)    
+    motion_file = create_motion_file(body_transforms, floor_offset=0.1, frame_rate=60.0)    
 
     # キャリブレーションデータを計算
     calibration_data = calculate_calibration_data(data['pose3d'])
