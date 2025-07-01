@@ -47,10 +47,13 @@ def pose_to_body_transforms(pose):
     r_heel_pos = pose[KEYPOINTS_DICT['right_heel']]
     r_toe_pos = pose[KEYPOINTS_DICT['right_toe']]    
     
-    body_core_vector = (l_shoulder_pos + r_shoulder_pos) / 2 - (l_hip_pos + r_hip_pos) / 2
-    body_length =  np.linalg.norm(body_core_vector)
-    hip_pos = (l_hip_pos + r_hip_pos) / 2 + body_core_vector * body_length * 0.1
-    neck_pos = (l_shoulder_pos + r_shoulder_pos) / 2 + body_core_vector * body_length * 0.1
+    m_shoulder_pos = (l_shoulder_pos + r_shoulder_pos) / 2
+    m_hip_pos = (l_hip_pos + r_hip_pos) / 2
+    body_core_vector = m_shoulder_pos - m_hip_pos
+    body_core_length =  np.linalg.norm(body_core_vector)
+    body_core_direction = body_core_vector / (body_core_length + 1e-5)
+    hip_pos = m_hip_pos + body_core_direction * body_core_length * 0.1
+    neck_pos = m_shoulder_pos + body_core_direction * body_core_length * 0.1
     head_center_pos = (l_ear_pos + r_ear_pos) / 2 
     head_pos = (2 * neck_pos + 2 * head_center_pos) / 4
     chest_pos = (hip_pos + neck_pos) / 2 
