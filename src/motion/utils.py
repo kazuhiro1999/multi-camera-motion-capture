@@ -233,9 +233,11 @@ def pose_to_body_transforms(pose):
     return body_transform
 
 
-def create_motion_file(body_transforms, floor_offset=0.0, frame_rate=60.0, left_handed=False) -> MotionFile:
+def create_motion_file(body_transforms, floor_offset=0.0, frame_rate=60.0, left_handed=True) -> MotionFile:
     """
     Unity用の座標変換データをMotionFileに変換する関数
+    入力：右手座標系 (OpenCV)
+    出力：左手座標系 (Unity)
     
     Args:
         body_transforms: Unityに変換された座標データ
