@@ -370,6 +370,13 @@ def calculate_calibration_data(poses, verbose=1) -> CalibrationData:
 
 def calculate_bone_length(poses, joint_index_1, joint_index_2):
     distances = np.linalg.norm(poses[:, joint_index_1] - poses[:, joint_index_2], axis=-1)
+
+    distances = distances[np.isfinite(distances)]  # 非有限値（NaN、inf）を除外
+    
+    # データが存在しない場合はゼロまたは適当なデフォルト値を返す
+    if len(distances) == 0:
+        return -1
+    
     mu, std = stats.norm.fit(distances)
     return mu
 
