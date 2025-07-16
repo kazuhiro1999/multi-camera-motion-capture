@@ -39,7 +39,6 @@ This project extracts **3D human motion** from **multi-view video footage** sync
          "video_path": "path/to/video.mp4",
          "camera_setting_path": "path/to/camera_setting.json"
        }, 
-       ...
      ],
      "output_dir": "output",
      "max_segments_count": 1,
@@ -63,6 +62,32 @@ This project extracts **3D human motion** from **multi-view video footage** sync
   - use_refine: Whether to run 3D pose refinement (optional).
   - use_smoothing: Whether to apply smoothing filter on 3D poses.
   
+## 📷 Camera Setting Format (camera_setting_*.json)
+Each camera requires a calibration JSON file containing its intrinsic and extrinsic parameters. These are critical for 3D pose reconstruction.
+   ```json
+  {  
+    "name": "DJI Osmo Action 3",
+    "intrinsic_matrix": [
+      [752.0, 0.0, 960.0],
+      [0.0, 752.0, 540.0],
+      [0.0, 0.0, 1.0]
+    ],
+    "extrinsic_matrix": [
+      [-0.7071067861992015, -1.1314261139488288e-16, -0.7071067761738934, 1.7744794845495025e-08],
+      [1.1314261139488288e-16, -1.0, 4.686520365223107e-17, 1.0000000000000002],
+      [-0.7071067761738934, -4.686520365223107e-17, 0.7071067861992015, 2.5031579784263953]
+    ],
+    "image_width": 1920,
+    "image_height": 1080
+  }
+   ```
+
+### Required Fields
+  - intrinsic_matrix (3x3): Camera intrinsics, typically obtained from calibration tools.
+  - extrinsic_matrix (3x4): World-to-camera transformation matrix.
+  - image_width, image_height: (Optional) Resolution of the input video.
+
+💡 Note: Only intrinsic_matrix and extrinsic_matrix are strictly required.  
 
 ## 📌 Processing Pipeline
 1. Audio Sync & Trimming
